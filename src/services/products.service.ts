@@ -6,6 +6,12 @@ async function create(product: ProductInputtableTypes) {
   return { status: 201, data: productResponse};
 };
 
+async function getAll() {
+  const products = await ProductModel.findAll();
+  return { status: 200, data: products };
+}
+
 export default {
   create,
+  getAll,
 };
