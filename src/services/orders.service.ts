@@ -16,13 +16,13 @@ async function getAll(): Promise<OrderResponse> {
   const orders = await OrderModel.findAll({
     include: { model: ProductModel, as: 'productIds', attributes: ['id'] },
   });
-  const formattedOrders = orders.map((order) => {
-    const newOrder = order.toJSON();
-    newOrder.productIds = newOrder.productIds?.map((id) =>
-      (typeof id === 'object' ? id.id : id));
-    return newOrder;
+  const ordersJson = orders.map((order) => order.toJSON());
+
+  const result = ordersJson.map((order) => {
+    const productIds = (order.productIds as { id: number }[]).map((product) => product.id);
+    return { ...order, productIds };
   });
-  return { status: 200, data: formattedOrders as unknown as OrderData[] };
+  return { status: 200, data: result as unknown as OrderData[] };
 }
 
 export default {
